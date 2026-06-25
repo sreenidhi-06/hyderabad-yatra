@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Hotels — Smart Travel In Hyderabad{% endblock %}
+{% block content %}
+<div class="page-header"><h1><i class="fas fa-hotel"></i> Hotels & Stay</h1><p>Find the perfect accommodation — from budget stays to luxury palaces</p></div>
+<div class="filters-bar">
+    <button class="filter-btn {{ 'active' if budget == 'all' }}" onclick="filterHotels('all')">All Hotels</button>
+    <button class="filter-btn {{ 'active' if budget == 'budget' }}" onclick="filterHotels('budget')">💰 Budget (Under ₹2,000)</button>
+    <button class="filter-btn {{ 'active' if budget == 'mid' }}" onclick="filterHotels('mid')">🏨 Mid-Range (₹2K–₹7K)</button>
+    <button class="filter-btn {{ 'active' if budget == 'luxury' }}" onclick="filterHotels('luxury')">👑 Luxury (₹7,000+)</button>
+</div>
+<div class="card-grid" style="padding-bottom:80px;">
+    {% if hotels %}{% for h in hotels %}
+    <div class="hotel-card"><div class="card-image"><img src="{{ h.image_url }}" alt="{{ h.name }}" onerror="this.src='https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600'"><span class="price-tag">₹{{ "{:,}".format(h.price_per_night) }}/night</span><span class="card-rating"><i class="fas fa-star"></i> {{ h.rating }}</span></div><div class="card-body"><h3>{{ h.name }}</h3><p><span class="card-badge {{ 'badge-temple' if h.category == 'Luxury' else 'badge-attraction' }}" style="position:static;display:inline-block;margin-bottom:8px;">{{ h.category }}</span></p><p>{{ h.amenities }}</p><div class="card-meta"><span><i class="fas fa-map-marker-alt"></i> {{ h.address }}</span><span><i class="fas fa-phone"></i> {{ h.contact }}</span></div></div></div>
+    {% endfor %}{% else %}
+    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><h3 style="color:var(--text-light);">No hotels found for this budget range</h3></div>
+    {% endif %}
+</div>
+{% endblock %}

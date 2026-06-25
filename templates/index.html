@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Smart Travel In Hyderabad — Hyderabad Yatra{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-pattern"></div>
+    <div class="hero-content">
+        <div class="hero-text">
+            <div class="hero-badge"><i class="fas fa-map-marked-alt"></i> Hyderabad Yatra</div>
+            <h1>Smart Travel In <span>Hyderabad</span></h1>
+            <p class="hero-desc">Your complete travel companion for the City of Pearls. Explore ancient temples, iconic monuments, legendary cuisine, and vibrant culture — all in one place.</p>
+            <div class="hero-actions">
+                <a href="/places" class="btn btn-primary"><i class="fas fa-compass"></i> Explore Places</a>
+                <a href="/budget" class="btn btn-outline"><i class="fas fa-wallet"></i> Plan Budget</a>
+            </div>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-card"><i class="fas fa-gopuram"></i><h3>12+</h3><p>Temples & Attractions</p></div>
+            <div class="stat-card"><i class="fas fa-utensils"></i><h3>10+</h3><p>Top Food Places</p></div>
+            <div class="stat-card"><i class="fas fa-bus"></i><h3>10+</h3><p>Bus Routes</p></div>
+            <div class="stat-card"><i class="fas fa-hotel"></i><h3>8+</h3><p>Hotels Listed</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <h2>Top Places to Visit</h2>
+        <p>Explore the most iconic temples and tourist attractions in Hyderabad</p>
+        <div class="section-divider"><span></span><i class="fas fa-star"></i><span></span></div>
+    </div>
+    <div class="card-grid">
+        {% for place in places %}
+        <a href="/place/{{ place.id }}" class="place-card">
+            <div class="card-image">
+                <img src="{{ place.image_url }}" alt="{{ place.name }}" onerror="this.src='https://images.unsplash.com/photo-1590766940554-634855926788?w=600'">
+                <span class="card-badge {{ 'badge-temple' if place.category == 'temple' else 'badge-attraction' }}">{{ place.category | capitalize }}</span>
+                <span class="card-rating"><i class="fas fa-star"></i> {{ place.rating }}</span>
+            </div>
+            <div class="card-body">
+                <h3>{{ place.name }}</h3>
+                <p>{{ place.description }}</p>
+                <div class="card-meta">
+                    <span><i class="fas fa-clock"></i> {{ place.opening_time }} - {{ place.closing_time }}</span>
+                    <span class="view-btn">View Details →</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:36px;"><a href="/places" class="btn btn-primary">View All Places <i class="fas fa-arrow-right"></i></a></div>
+</section>
+
+<section class="section" style="background:var(--pearl);">
+    <div class="section-header">
+        <h2>Legendary Hyderabadi Food</h2>
+        <p>From iconic Biryani to Irani Chai — taste the best of Hyderabad</p>
+        <div class="section-divider"><span></span><i class="fas fa-utensils"></i><span></span></div>
+    </div>
+    <div class="card-grid">
+        {% for f in food %}
+        <div class="food-card">
+            <div class="card-image">
+                <img src="{{ f.image_url }}" alt="{{ f.name }}" onerror="this.src='https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600'">
+                <span class="price-tag">{{ f.price_range }}</span>
+            </div>
+            <div class="card-body">
+                <h3>{{ f.name }}</h3>
+                <p>{{ f.specialty }} · {{ f.cuisine }}</p>
+                <div class="card-meta">
+                    <span><i class="fas fa-star"></i> {{ f.rating }}</span>
+                    <span class="diet-badge {{ 'diet-veg' if f.veg_nonveg == 'Veg' else ('diet-nonveg' if f.veg_nonveg == 'Non-Veg' else 'diet-both') }}">{{ f.veg_nonveg }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:36px;"><a href="/food" class="btn btn-primary">Explore All Food <i class="fas fa-arrow-right"></i></a></div>
+</section>
+
+<section class="recommend-section" id="recommend">
+    <div class="section-header">
+        <h2>Get Personalized Recommendations</h2>
+        <p>Tell us your preferences and we'll plan the perfect trip for you</p>
+        <div class="section-divider"><span></span><i class="fas fa-magic"></i><span></span></div>
+    </div>
+    <div class="recommend-form">
+        <div class="form-group"><label><i class="fas fa-heart"></i> What interests you?</label><select id="interest"><option value="all">Everything — Temples & Attractions</option><option value="temple">Temples & Spiritual Places</option><option value="attraction">Tourist Attractions & Monuments</option></select></div>
+        <div class="form-group"><label><i class="fas fa-wallet"></i> Your Budget Level</label><select id="budgetLevel"><option value="low">Budget Friendly (Under ₹2000/day)</option><option value="medium" selected>Mid Range (₹2000-₹7000/day)</option><option value="high">Premium Experience (₹7000+/day)</option></select></div>
+        <div class="form-group"><label><i class="fas fa-leaf"></i> Dietary Preference</label><select id="dietPref"><option value="both">Both Veg & Non-Veg</option><option value="veg">Vegetarian Only</option><option value="non-veg">Non-Vegetarian</option></select></div>
+        <button class="btn btn-primary" onclick="getRecommendations()" style="width:100%;justify-content:center;"><i class="fas fa-wand-magic-sparkles"></i> Get My Recommendations</button>
+    </div>
+    <div class="recommend-results" id="recommendResults"></div>
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <h2>Plan Your Trip</h2>
+        <p>Everything you need for a perfect Hyderabad experience</p>
+        <div class="section-divider"><span></span><i class="fas fa-route"></i><span></span></div>
+    </div>
+    <div class="card-grid" style="max-width:900px;">
+        <a href="/transport" class="place-card" style="text-align:center;padding:32px;"><i class="fas fa-bus" style="font-size:2.5rem;color:var(--teal);margin-bottom:16px;"></i><h3 style="margin-bottom:8px;">Bus Routes & Transport</h3><p>Find bus routes, stops, and navigate across the city with ease</p></a>
+        <a href="/budget" class="place-card" style="text-align:center;padding:32px;"><i class="fas fa-calculator" style="font-size:2.5rem;color:var(--saffron);margin-bottom:16px;"></i><h3 style="margin-bottom:8px;">Budget Planner</h3><p>Estimate your trip cost with our ready-made budget plans</p></a>
+        <a href="/map" class="place-card" style="text-align:center;padding:32px;"><i class="fas fa-map-marked-alt" style="font-size:2.5rem;color:var(--deep-maroon);margin-bottom:16px;"></i><h3 style="margin-bottom:8px;">Live Map View</h3><p>Explore locations on an interactive map with real-time info</p></a>
+    </div>
+</section>
+{% endblock %}

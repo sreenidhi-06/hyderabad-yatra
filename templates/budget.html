@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Budget Planner — Smart Travel In Hyderabad{% endblock %}
+{% block content %}
+<div class="page-header"><h1><i class="fas fa-wallet"></i> Budget Planner</h1><p>Estimate your Hyderabad trip cost with ready-made budget plans</p></div>
+<div class="container" style="padding:40px 24px 80px;">
+    <div class="tips-box" style="margin-bottom:40px;"><h4><i class="fas fa-lightbulb"></i> Budget Planning Tips</h4><p>Hyderabad is one of the most affordable metro cities in India. Street food costs ₹50–₹200. Public transport covers most spots for under ₹50/trip. Many temples have free entry. Group nearby attractions to save on transport.</p></div>
+    <div class="card-grid card-grid-3">
+        {% for plan in plans %}
+        <div class="budget-card">
+            <div class="budget-header"><h3>{{ plan.plan_name }}</h3><span class="duration"><i class="fas fa-calendar-day"></i> {{ plan.duration }}</span></div>
+            <div class="budget-body">
+                <p style="color:var(--text-light);font-size:0.88rem;margin-bottom:16px;">{{ plan.description }}</p>
+                <div class="budget-row"><span class="label"><i class="fas fa-bus"></i> Transport</span><span class="amount">₹{{ "{:,}".format(plan.transport_cost) }}</span></div>
+                <div class="budget-row"><span class="label"><i class="fas fa-utensils"></i> Food</span><span class="amount">₹{{ "{:,}".format(plan.food_cost) }}</span></div>
+                <div class="budget-row"><span class="label"><i class="fas fa-bed"></i> Accommodation</span><span class="amount">₹{{ "{:,}".format(plan.accommodation_cost) }}</span></div>
+                <div class="budget-row"><span class="label"><i class="fas fa-ticket-alt"></i> Entry Fees</span><span class="amount">₹{{ "{:,}".format(plan.entry_fees) }}</span></div>
+            </div>
+            <div class="budget-total"><span>Total Estimated Cost</span><span class="total-amount">₹{{ "{:,}".format(plan.total_cost) }}</span></div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Best Food — Smart Travel In Hyderabad{% endblock %}
+{% block content %}
+<div class="page-header"><h1><i class="fas fa-utensils"></i> Hyderabadi Food Guide</h1><p>From world-famous Biryani to authentic Irani Chai</p></div>
+<div class="filters-bar">
+    <button class="filter-btn {{ 'active' if cuisine == 'all' }}" onclick="filterFood('all')">All Cuisines</button>
+    {% for c in cuisines %}<button class="filter-btn {{ 'active' if cuisine == c.cuisine }}" onclick="filterFood('{{ c.cuisine }}')">{{ c.cuisine }}</button>{% endfor %}
+    <span style="width:1px;height:30px;background:var(--pearl);margin:0 4px;"></span>
+    <button class="filter-btn {{ 'active' if diet == 'Veg' }}" onclick="filterDiet('Veg')">🟢 Veg</button>
+    <button class="filter-btn {{ 'active' if diet == 'Non-Veg' }}" onclick="filterDiet('Non-Veg')">🔴 Non-Veg</button>
+</div>
+<div class="card-grid" style="padding-bottom:80px;">
+    {% if food %}{% for f in food %}
+    <div class="food-card"><div class="card-image"><img src="{{ f.image_url }}" alt="{{ f.name }}" onerror="this.src='https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600'"><span class="price-tag">{{ f.price_range }}</span><span class="card-rating"><i class="fas fa-star"></i> {{ f.rating }}</span></div><div class="card-body"><h3>{{ f.name }}</h3><p><strong>Specialty:</strong> {{ f.specialty }}</p><p><strong>Cuisine:</strong> {{ f.cuisine }}</p><div class="card-meta"><span><i class="fas fa-map-marker-alt"></i> {{ f.address }}</span><span class="diet-badge {{ 'diet-veg' if f.veg_nonveg == 'Veg' else ('diet-nonveg' if f.veg_nonveg == 'Non-Veg' else 'diet-both') }}">{{ f.veg_nonveg }}</span></div></div></div>
+    {% endfor %}{% else %}
+    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><h3 style="color:var(--text-light);">No food places found</h3></div>
+    {% endif %}
+</div>
+{% endblock %}

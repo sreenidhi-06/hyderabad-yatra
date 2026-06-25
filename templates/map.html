@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Live Map — Smart Travel In Hyderabad{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+main{padding:0}.map-container{height:calc(100vh - 68px);margin-top:68px;position:relative}#live-map{width:100%;height:100%;z-index:1}.leaflet-popup-content-wrapper{border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.15)}.leaflet-popup-content{margin:14px 16px;font-family:'DM Sans',sans-serif}.popup-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:#6B1D2A;margin-bottom:4px}.popup-addr{font-size:.8rem;color:#6B6B80;margin-bottom:6px}.popup-rating{font-size:.82rem;color:#C9A84C;font-weight:600}.popup-link{display:inline-block;margin-top:8px;padding:5px 14px;background:#E8860C;color:#fff;border-radius:6px;font-size:.78rem;font-weight:600;text-decoration:none}.popup-link:hover{background:#d07808}
+</style>
+{% endblock %}
+{% block content %}
+<div class="map-container">
+    <div id="live-map"></div>
+    <div class="map-sidebar">
+        <div class="map-sidebar-header"><h3><i class="fas fa-map-marked-alt"></i> Explore Hyderabad</h3>
+        <div class="map-filter-btns">
+            <button class="map-filter-btn active" onclick="showAll(this)">All</button>
+            <button class="map-filter-btn" onclick="showCategory('temple',this)">Temples</button>
+            <button class="map-filter-btn" onclick="showCategory('attraction',this)">Attractions</button>
+            <button class="map-filter-btn" onclick="showCategory('food',this)">Food</button>
+            <button class="map-filter-btn" onclick="showCategory('hotel',this)">Hotels</button>
+        </div></div>
+        <div class="map-list" id="mapList"></div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const placesData=[{% for p in places %}{id:{{p.id}},name:"{{p.name}}",category:"{{p.category}}",lat:{{p.latitude}},lng:{{p.longitude}},rating:{{p.rating}},address:"{{p.address}}",type:"{{p.category}}"},{% endfor %}];
+const foodData=[{% for f in food %}{id:{{f.id}},name:"{{f.name}}",lat:{{f.latitude}},lng:{{f.longitude}},rating:{{f.rating}},address:"{{f.address}}",type:"food"},{% endfor %}];
+const hotelData=[{% for h in hotels %}{id:{{h.id}},name:"{{h.name}}",lat:{{h.latitude}},lng:{{h.longitude}},rating:{{h.rating}},address:"{{h.address}}",type:"hotel"},{% endfor %}];
+
+const map=L.map('live-map').setView([17.385,78.4867],12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);
+
+function createIcon(color,icon){return L.divIcon({className:'custom-marker',html:`<div style="background:${color};width:36px;height:36px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.3);border:2px solid white;"><i class="fas fa-${icon}" style="transform:rotate(45deg);color:white;font-size:14px;"></i></div>`,iconSize:[36,36],iconAnchor:[18,36],popupAnchor:[0,-36]})}
+const icons={temple:createIcon('#6B1D2A','gopuram'),attraction:createIcon('#0D7377','landmark'),food:createIcon('#E8860C','utensils'),hotel:createIcon('#1A365D','hotel')};
+
+let allMarkers=[],markerLayers={temple:[],attraction:[],food:[],hotel:[]};
+function addMarkers(data,type){data.forEach(item=>{const icon=icons[type];const linkHtml=(type==='temple'||type==='attraction')?`<a href="/place/${item.id}" class="popup-link">View Details</a>`:'';const marker=L.marker([item.lat,item.lng],{icon}).bindPopup(`<div class="popup-title">${item.name}</div><div class="popup-addr"><i class="fas fa-map-marker-alt"></i> ${item.address}</div><div class="popup-rating"><i class="fas fa-star"></i> ${item.rating}/5</div>${linkHtml}`).addTo(map);marker._data={...item,type};allMarkers.push(marker);markerLayers[type].push(marker)})}
+addMarkers(placesData.filter(p=>p.category==='temple'),'temple');
+addMarkers(placesData.filter(p=>p.category==='attraction'),'attraction');
+addMarkers(foodData,'food');addMarkers(hotelData,'hotel');
+
+function renderList(markers){const list=document.getElementById('mapList');const iconMap={temple:'gopuram',attraction:'landmark',food:'utensils',hotel:'hotel'};list.innerHTML=markers.map((m,i)=>`<div class="map-list-item" onclick="flyTo(${m._data.lat},${m._data.lng},${i})"><div class="map-list-icon ${m._data.type}"><i class="fas fa-${iconMap[m._data.type]}"></i></div><div class="map-list-info"><h4>${m._data.name}</h4><p><i class="fas fa-star" style="color:#C9A84C;"></i> ${m._data.rating} · ${m._data.address}</p></div></div>`).join('')}
+renderList(allMarkers);
+function flyTo(lat,lng,index){map.flyTo([lat,lng],15,{duration:1});setTimeout(()=>allMarkers[index]?.openPopup(),800)}
+function showAll(btn){setActiveBtn(btn);allMarkers.forEach(m=>m.addTo(map));renderList(allMarkers);map.setView([17.385,78.4867],12)}
+function showCategory(cat,btn){setActiveBtn(btn);allMarkers.forEach(m=>map.removeLayer(m));const filtered=markerLayers[cat]||[];filtered.forEach(m=>m.addTo(map));renderList(filtered);if(filtered.length>0){map.fitBounds(L.featureGroup(filtered).getBounds().pad(0.2))}}
+function setActiveBtn(btn){document.querySelectorAll('.map-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+</script>
+{% endblock %}

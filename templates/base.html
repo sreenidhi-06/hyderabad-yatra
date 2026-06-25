@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Travel In Hyderabad{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <i class="fas fa-gopuram"></i>
+                <span>Smart Travel<em>Hyderabad</em></span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/" class="{{ 'active' if request.path == '/' }}"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/places" class="{{ 'active' if '/places' in request.path }}"><i class="fas fa-landmark"></i> Places</a></li>
+                <li><a href="/food" class="{{ 'active' if '/food' in request.path }}"><i class="fas fa-utensils"></i> Food</a></li>
+                <li><a href="/hotels" class="{{ 'active' if '/hotels' in request.path }}"><i class="fas fa-hotel"></i> Hotels</a></li>
+                <li><a href="/transport" class="{{ 'active' if '/transport' in request.path }}"><i class="fas fa-bus"></i> Transport</a></li>
+                <li><a href="/budget" class="{{ 'active' if '/budget' in request.path }}"><i class="fas fa-wallet"></i> Budget</a></li>
+                <li><a href="/map" class="{{ 'active' if '/map' in request.path }}"><i class="fas fa-map-marked-alt"></i> Live Map</a></li>
+            </ul>
+            <!-- Sign In / User Menu -->
+            <div class="auth-section">
+                {% if session.get('logged_in') %}
+                <div class="user-menu">
+                    <button class="user-btn" id="userBtn">
+                        <div class="user-avatar">{{ session.username[0] | upper }}</div>
+                        <span class="user-name">{{ session.username | capitalize }}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-header">
+                            <div class="dropdown-avatar">{{ session.username[0] | upper }}</div>
+                            <div>
+                                <div class="dropdown-name">{{ session.username | capitalize }}</div>
+                                <div class="dropdown-role">Traveler</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="/" class="dropdown-item"><i class="fas fa-home"></i> Dashboard</a>
+                        <a href="/places" class="dropdown-item"><i class="fas fa-heart"></i> My Favorites</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout" class="dropdown-item dropdown-logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="/login" class="signin-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Sign In</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3><i class="fas fa-gopuram"></i> Smart Travel In Hyderabad</h3>
+                    <p>Hyderabad Yatra — Your complete companion for exploring the City of Pearls — temples, monuments, food, and culture.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <a href="/places?category=temple">Temples</a>
+                    <a href="/places?category=attraction">Tourist Spots</a>
+                    <a href="/food">Best Food</a>
+                    <a href="/budget">Budget Plans</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Popular Places</h4>
+                    <a href="/place/6">Charminar</a>
+                    <a href="/place/7">Golconda Fort</a>
+                    <a href="/place/1">Birla Mandir</a>
+                    <a href="/place/8">Salar Jung Museum</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact & Help</h4>
+                    <p><i class="fas fa-phone"></i> Tourism Helpline: 1800-425-4645</p>
+                    <p><i class="fas fa-globe"></i> Telangana Tourism</p>
+                    <p><i class="fas fa-ambulance"></i> Emergency: 112</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Smart Travel In Hyderabad — Hyderabad Yatra | Built with Python Flask</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

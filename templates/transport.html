@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Transport — Smart Travel In Hyderabad{% endblock %}
+{% block content %}
+<div class="page-header"><h1><i class="fas fa-bus"></i> Bus Routes & Transport</h1><p>Navigate Hyderabad with TSRTC bus routes and transport information</p></div>
+<div class="filters-bar"><input type="text" class="search-input" style="min-width:350px;" placeholder="🔍 Search by route number, stop, or area..." value="{{ search }}" onkeypress="searchTransport(event)"></div>
+<div class="container" style="padding-bottom:80px;">
+    <div class="tips-box" style="margin-bottom:30px;"><h4><i class="fas fa-info-circle"></i> Hyderabad Transport Tips</h4><p>TSRTC operates extensive bus services across Hyderabad. You can also use the Hyderabad Metro Rail connecting Miyapur–LB Nagar, Nagole–Raidurg, and JBS–MGBS. Auto-rickshaws and ride-hailing apps (Ola, Uber, Rapido) are widely available.</p></div>
+    {% if routes %}
+    <div style="overflow-x:auto;"><table class="route-table"><thead><tr><th>Route No.</th><th>From</th><th>To</th><th>Via</th><th>Frequency</th><th>Fare</th><th>Timings</th></tr></thead><tbody>
+    {% for route in routes %}<tr><td><span class="route-number">{{ route.route_number }}</span></td><td>{{ route.from_stop }}</td><td>{{ route.to_stop }}</td><td>{{ route.via }}</td><td>{{ route.frequency }}</td><td><strong>{{ route.fare }}</strong></td><td>{{ route.first_bus }} – {{ route.last_bus }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<div style="text-align:center;padding:60px 20px;"><h3 style="color:var(--text-light);">No routes found for "{{ search }}"</h3></div>{% endif %}
+    <div style="margin-top:50px;"><h2 style="color:var(--deep-maroon);margin-bottom:24px;font-size:1.6rem;">Other Transport Options</h2>
+    <div class="card-grid" style="padding:0;">
+        <div class="place-card" style="padding:28px;text-align:center;"><i class="fas fa-train" style="font-size:2rem;color:var(--teal);margin-bottom:12px;"></i><h3 style="margin-bottom:8px;font-size:1.1rem;">Hyderabad Metro</h3><p style="font-size:0.88rem;">3 corridors, 69 km. Fare: ₹10–₹60. Runs 6 AM to 10 PM.</p></div>
+        <div class="place-card" style="padding:28px;text-align:center;"><i class="fas fa-taxi" style="font-size:2rem;color:var(--saffron);margin-bottom:12px;"></i><h3 style="margin-bottom:8px;font-size:1.1rem;">Auto & Cabs</h3><p style="font-size:0.88rem;">Min fare ~₹25. Use Ola, Uber, or Rapido for hassle-free rides.</p></div>
+        <div class="place-card" style="padding:28px;text-align:center;"><i class="fas fa-subway" style="font-size:2rem;color:var(--deep-maroon);margin-bottom:12px;"></i><h3 style="margin-bottom:8px;font-size:1.1rem;">MMTS Trains</h3><p style="font-size:0.88rem;">Suburban trains ₹5–₹25. Connects Lingampally, Falaknuma, Secunderabad.</p></div>
+    </div></div>
+</div>
+{% endblock %}

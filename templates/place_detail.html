@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ place.name }} — Hyderabad Yatra{% endblock %}
+{% block content %}
+<div class="detail-hero">
+    <img src="{{ place.image_url }}" alt="{{ place.name }}" onerror="this.src='https://images.unsplash.com/photo-1590766940554-634855926788?w=600'">
+    <div class="detail-hero-overlay"><div class="detail-hero-info"><h1>{{ place.name }}</h1><div class="detail-badges"><span><i class="fas fa-{{ 'gopuram' if place.category == 'temple' else 'landmark' }}"></i> {{ place.category | capitalize }}</span><span><i class="fas fa-star"></i> {{ place.rating }} Rating</span><span><i class="fas fa-map-marker-alt"></i> {{ place.address }}</span></div></div></div>
+</div>
+<div class="detail-content">
+    <div class="detail-main">
+        <h2>About</h2><p>{{ place.description }}</p>
+        <h2>History</h2><p>{{ place.history }}</p>
+        {% if place.special_events %}<h2>Special Events & Festivals</h2><p>{{ place.special_events }}</p>{% endif %}
+        <div class="tips-box"><h4><i class="fas fa-lightbulb"></i> Visitor Tips</h4><p>{{ place.tips }}</p></div>
+        {% if nearby_food %}<div class="nearby-section"><h2><i class="fas fa-utensils"></i> Nearby Food Places</h2>
+        {% for f in nearby_food %}<div class="nearby-item"><div class="nearby-icon"><i class="fas fa-utensils"></i></div><div class="nearby-info"><h4>{{ f.name }}</h4><p>{{ f.specialty }} · {{ f.cuisine }} · <span class="diet-badge {{ 'diet-veg' if f.veg_nonveg == 'Veg' else ('diet-nonveg' if f.veg_nonveg == 'Non-Veg' else 'diet-both') }}">{{ f.veg_nonveg }}</span></p></div><span class="nearby-dist">{{ f.distance }} km</span></div>{% endfor %}</div>{% endif %}
+        <div class="nearby-section"><h2><i class="fas fa-bus"></i> Bus Routes to Reach Here</h2><p style="color:var(--text-light);margin-bottom:16px;">Popular TSRTC bus routes:</p>
+        {% for route in bus_routes[:5] %}<div class="nearby-item"><div class="nearby-icon" style="background:rgba(13,115,119,0.1);color:var(--teal);"><i class="fas fa-bus"></i></div><div class="nearby-info"><h4>Route {{ route.route_number }}</h4><p>{{ route.from_stop }} → {{ route.to_stop }} (via {{ route.via }})</p></div><span class="nearby-dist">{{ route.fare }}</span></div>{% endfor %}
+        <div style="margin-top:12px;"><a href="/transport" class="btn btn-sm btn-teal">View All Bus Routes <i class="fas fa-arrow-right"></i></a></div></div>
+    </div>
+    <div><div class="info-card"><h3><i class="fas fa-info-circle"></i> Visitor Information</h3>
+        <div class="info-row"><i class="fas fa-clock"></i><div><div class="info-label">Opening Hours</div><div class="info-value">{{ place.opening_time }} - {{ place.closing_time }}</div></div></div>
+        <div class="info-row"><i class="fas fa-ticket-alt"></i><div><div class="info-label">Entry Fee</div><div class="info-value">{{ place.entry_fee }}</div></div></div>
+        <div class="info-row"><i class="fas fa-sun"></i><div><div class="info-label">Best Time to Visit</div><div class="info-value">{{ place.best_time }}</div></div></div>
+        <div class="info-row"><i class="fas fa-map-marker-alt"></i><div><div class="info-label">Address</div><div class="info-value">{{ place.address }}</div></div></div>
+        <div class="info-row"><i class="fas fa-calendar-alt"></i><div><div class="info-label">Special Events</div><div class="info-value">{{ place.special_events or 'No upcoming events' }}</div></div></div>
+        <div style="margin-top:20px;"><a href="/map" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;"><i class="fas fa-map-marked-alt"></i> View on Live Map</a></div>
+    </div></div>
+</div>
+{% endblock %}
